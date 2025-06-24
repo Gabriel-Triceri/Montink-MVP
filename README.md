@@ -23,6 +23,13 @@ Este projeto é um sistema básico de e-commerce desenvolvido em PHP com arquite
 
 O código está organizado em Models para acesso ao banco, Services para a lógica de negócio, e Views para a interface HTML.
 
+## Como rodar a aplicação
+Baixar o XAMPP e dar start no APache e no Mysql
+Colocar o projeto dentro de:
+C:\xampp\htdocs
+Inserir as tabelas no banco de dados que esta na pasta BD
+E testar as rotas atraves do chome
+
 ## Rotas e Endpoints
 
 ### 📦 Produtos

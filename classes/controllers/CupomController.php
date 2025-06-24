@@ -1,34 +1,30 @@
 <?php
-require_once __DIR__ . '/../model/Cupom.php';
+require_once __DIR__ . '/../Service/CupomService.php';
 
 class CupomController {
-    private $cupomModel;
+    private $service;
 
     public function __construct($db) {
-        $this->cupomModel = new Cupom($db);
+        $this->service = new CupomService($db);
     }
 
-    
     public function index() {
-        $cupons = $this->cupomModel->listarTodos()->fetchAll(PDO::FETCH_ASSOC);
+        $cupons = $this->service->listarTodos();
         include __DIR__ . '/../../views/cupom/index.php';
     }
 
-   
     public function criar() {
         $cupom = null; 
         include __DIR__ . '/../../views/cupom/form.php';
     }
 
- 
     public function salvar() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $codigo = $_POST['codigo'] ?? '';
             $desconto = floatval($_POST['desconto'] ?? 0);
             $validade = $_POST['validade'] ?? '';
 
-            
-            if ($this->cupomModel->salvar($codigo, $desconto, $validade)) {
+            if ($this->service->salvar($codigo, $desconto, $validade)) {
                 header('Location: /DEV-GABRIEL/cupom');
                 exit();
             } else {
@@ -37,9 +33,8 @@ class CupomController {
         }
     }
 
-    
     public function editar($id) {
-        $cupom = $this->cupomModel->buscarPorId($id);
+        $cupom = $this->service->buscarPorId($id);
         if (!$cupom) {
             header('Location: /DEV-GABRIEL/cupom');
             exit();
@@ -47,7 +42,6 @@ class CupomController {
         include __DIR__ . '/../../views/cupom/form.php';
     }
 
-    
     public function atualizar() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = intval($_POST['id'] ?? 0);
@@ -55,7 +49,7 @@ class CupomController {
             $desconto = floatval($_POST['desconto'] ?? 0);
             $validade = $_POST['validade'] ?? '';
 
-            if ($this->cupomModel->atualizar($id, $codigo, $desconto, $validade)) {
+            if ($this->service->atualizar($id, $codigo, $desconto, $validade)) {
                 header('Location: /DEV-GABRIEL/cupom');
                 exit();
             } else {
@@ -64,9 +58,8 @@ class CupomController {
         }
     }
 
- 
     public function deletar($id) {
-        if ($this->cupomModel->deletar($id)) {
+        if ($this->service->deletar($id)) {
             header('Location: /DEV-GABRIEL/cupom');
             exit();
         } else {

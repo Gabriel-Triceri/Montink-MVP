@@ -1,25 +1,14 @@
 <?php
-require_once __DIR__ . '/../model/Produto.php';
-require_once __DIR__ . '/../model/Estoque.php';
-require_once __DIR__ . '/../model/Pedido.php';
-require_once __DIR__ . '/../model/Cupom.php';
+require_once __DIR__ . '/../Service/CarrinhoService.php';
 
 class CarrinhoController {
-    private $produtoModel;
-    private $estoqueModel;
-    private $pedidoModel;
-    private $cupomModel;
-    private $db;
+    private $service;
 
     public function __construct($db) {
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
-        $this->db = $db;
-        $this->produtoModel = new Produto($db);
-        $this->estoqueModel = new Estoque($db);
-        $this->pedidoModel = new Pedido($db);
-        $this->cupomModel = new Cupom($db);
+        $this->service = new CarrinhoService($db);
 
         if (!isset($_SESSION['carrinho'])) {
             $_SESSION['carrinho'] = [];
@@ -36,56 +25,12 @@ class CarrinhoController {
         $quantidade = max(1, (int)($_POST['quantidade'] ?? 1));
         $variacao   = $_POST['variacao'] ?? null;
 
-        $estoques = $this->estoqueModel->listarPorProduto($produtoId)->fetchAll(PDO::FETCH_ASSOC);
+        $erro = $this->service->adicionarAoCarrinho($_SESSION['carrinho'], $produtoId, $quantidade, $variacao);
 
-        $estoqueDisponivel = 0;
-        $estoqueId = null;
-        foreach ($estoques as $e) {
-            if ($e['variacao'] === $variacao) {
-                $estoqueDisponivel = (int)$e['quantidade'];
-                $estoqueId = $e['id'];
-                break;
-            }
-        }
-
-        if ($quantidade > $estoqueDisponivel) {
-            $_SESSION['erro_carrinho'] = "Quantidade solicitada maior que o estoque disponível.";
+        if ($erro) {
+            $_SESSION['erro_carrinho'] = $erro;
             header('Location: /DEV-GABRIEL/produto');
             exit();
-        }
-
-        $itemKey = null;
-        foreach ($_SESSION['carrinho'] as $k => $i) {
-            if ($i['produto_id'] === $produtoId && $i['variacao'] === $variacao) {
-                $itemKey = $k;
-                break;
-            }
-        }
-
-        if ($itemKey !== null) {
-            $novaQtd = $_SESSION['carrinho'][$itemKey]['quantidade'] + $quantidade;
-            if ($novaQtd > $estoqueDisponivel) {
-                $_SESSION['erro_carrinho'] = "Quantidade no carrinho ultrapassa estoque disponível.";
-                header('Location: /DEV-GABRIEL/produto');
-                exit();
-            }
-            $_SESSION['carrinho'][$itemKey]['quantidade'] = $novaQtd;
-        } else {
-            $produto = $this->produtoModel->buscarPorId($produtoId);
-            if (!$produto) {
-                $_SESSION['erro_carrinho'] = "Produto não encontrado.";
-                header('Location: /DEV-GABRIEL/produto');
-                exit();
-            }
-
-            $_SESSION['carrinho'][] = [
-                'produto_id' => $produtoId,
-                'nome'       => $produto['nome'],
-                'preco'      => $produto['preco'],
-                'variacao'   => $variacao,
-                'quantidade' => $quantidade,
-                'estoque_id' => $estoqueId,
-            ];
         }
 
         $_SESSION['sucesso_carrinho'] = "Produto adicionado ao carrinho.";
@@ -94,26 +39,16 @@ class CarrinhoController {
     }
 
     public function index() {
-        $carrinho = $_SESSION['carrinho'] ?? [];
+        $carrinho = $_SESSION['carrinho'];
 
-        $subtotal = array_reduce($carrinho, function($sum, $item) {
-            return $sum + ($item['preco'] * $item['quantidade']);
-        }, 0.0);
-
-        if ($subtotal >= 52 && $subtotal <= 166.59) {
-            $frete = 15;
-        } elseif ($subtotal > 200) {
-            $frete = 0;
-        } else {
-            $frete = 20;
-        }
-
-        $cuponsDisponiveis = $this->cupomModel->buscarCuponsValidos();
+        $subtotal = $this->service->calcularSubtotal($carrinho);
+        $frete = $this->service->calcularFrete($subtotal);
+        $cuponsDisponiveis = $this->service->buscarCuponsValidos();
 
         $desconto = 0;
         $cupom = $_SESSION['cupom'] ?? null;
         if ($cupom) {
-            $desconto = ($cupom['desconto_percentual'] / 100) * $subtotal;
+            $desconto = $this->service->calcularDesconto($cupom, $subtotal);
             unset($_SESSION['cupom']);
         }
 
@@ -125,7 +60,7 @@ class CarrinhoController {
     public function aplicarCupom() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $codigo = $_POST['cupom_codigo'] ?? '';
-            $cupom = $this->cupomModel->buscarPorCodigo($codigo);
+            $cupom = $this->service->aplicarCupomPorCodigo($codigo);
 
             if ($cupom) {
                 $_SESSION['cupom'] = $cupom;
@@ -141,12 +76,9 @@ class CarrinhoController {
     }
 
     public function remover($index) {
-        if (isset($_SESSION['carrinho'][$index])) {
-            unset($_SESSION['carrinho'][$index]);
-            $_SESSION['carrinho'] = array_values($_SESSION['carrinho']);
+        if ($this->service->removerItemDoCarrinho($_SESSION['carrinho'], $index)) {
             $_SESSION['sucesso_carrinho'] = "Item removido do carrinho.";
         }
-
         header('Location: /DEV-GABRIEL/carrinho');
         exit();
     }
@@ -154,33 +86,17 @@ class CarrinhoController {
     public function atualizar($index) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $novaQtd = max(1, (int)($_POST['quantidade'] ?? 1));
-            if (!isset($_SESSION['carrinho'][$index])) {
-                $_SESSION['erro_carrinho'] = "Item inválido.";
+
+            $erro = $this->service->atualizarQuantidade($_SESSION['carrinho'], $index, $novaQtd);
+
+            if ($erro) {
+                $_SESSION['erro_carrinho'] = $erro;
                 header('Location: /DEV-GABRIEL/carrinho');
                 exit();
             }
 
-            $item = $_SESSION['carrinho'][$index];
-            $estoques = $this->estoqueModel->listarPorProduto($item['produto_id'])->fetchAll(PDO::FETCH_ASSOC);
-
-            $estoqueDisponivel = 0;
-            foreach ($estoques as $e) {
-                if ($e['variacao'] === $item['variacao']) {
-                    $estoqueDisponivel = (int)$e['quantidade'];
-                    break;
-                }
-            }
-
-            if ($novaQtd > $estoqueDisponivel) {
-                $_SESSION['erro_carrinho'] = "Quantidade solicitada ultrapassa estoque disponível.";
-                header('Location: /DEV-GABRIEL/carrinho');
-                exit();
-            }
-
-            $_SESSION['carrinho'][$index]['quantidade'] = $novaQtd;
             $_SESSION['sucesso_carrinho'] = "Quantidade atualizada com sucesso.";
         }
-
         header('Location: /DEV-GABRIEL/carrinho');
         exit();
     }
@@ -200,24 +116,17 @@ class CarrinhoController {
             exit();
         }
 
-        $subtotal = array_reduce($carrinho, fn($sum, $i) => $sum + ($i['preco'] * $i['quantidade']), 0.0);
-
-        if ($subtotal >= 52 && $subtotal <= 166.59) {
-            $frete = 15;
-        } elseif ($subtotal > 200) {
-            $frete = 0;
-        } else {
-            $frete = 20;
-        }
+        $subtotal = $this->service->calcularSubtotal($carrinho);
+        $frete = $this->service->calcularFrete($subtotal);
 
         $desconto = 0;
         $cupomId = null;
         if (!empty($_SESSION['cupom'])) {
             $cupomId = $_SESSION['cupom']['id'];
-            $desconto = ($_SESSION['cupom']['desconto_percentual'] / 100) * $subtotal;
+            $desconto = $this->service->calcularDesconto($_SESSION['cupom'], $subtotal);
         }
 
-        $pedidoId = $this->pedidoModel->criarPedido($carrinho, $subtotal, $frete, $desconto, $cupomId);
+        $pedidoId = $this->service->criarPedido($carrinho, $subtotal, $frete, $desconto, $cupomId);
 
         if ($pedidoId) {
             $assunto = "Confirmação do Pedido #$pedidoId";

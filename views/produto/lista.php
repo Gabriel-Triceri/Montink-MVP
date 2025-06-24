@@ -3,9 +3,6 @@ $baseUrl = '/DEV-GABRIEL';
 
 $isCreate = ($_GET['acao'] ?? '') === 'criar';
 $isEdit = (($_GET['acao'] ?? '') === 'editar') && isset($produtoEdit);
-
-require_once __DIR__ . '/../../classes/model/Estoque.php';
-$estoqueModel = new Estoque($db);
 ?>
 
 <!DOCTYPE html>
@@ -19,16 +16,13 @@ $estoqueModel = new Estoque($db);
 
 <h1>Produtos Cadastrados</h1>
 
-
 <p>
     <a href="<?= $baseUrl ?>/carrinho" style="padding: 8px 12px; background-color: #0188A7; color: white; text-decoration: none; border-radius: 4px;">
         Ver Carrinho
     </a>
 </p>
 
-
 <p><a href="<?= $baseUrl ?>/produto?acao=criar">Criar Novo Produto</a></p>
-
 
 <?php if ($isCreate || $isEdit): ?>
     <h2><?= $isEdit ? "Editar Produto" : "Cadastrar Produto" ?></h2>
@@ -58,7 +52,6 @@ $estoqueModel = new Estoque($db);
             required
         />
 
-       
         <label for="variacao">Variação:</label>
         <input
             type="text"
@@ -81,7 +74,6 @@ $estoqueModel = new Estoque($db);
         <button type="submit"><?= $isEdit ? "Atualizar" : "Cadastrar" ?></button>
     </form>
 
-    
     <?php if ($isEdit): ?>
         <h3>Adicionar ao Carrinho</h3>
         <form action="<?= $baseUrl ?>/carrinho/adicionar" method="POST">
@@ -110,10 +102,8 @@ $estoqueModel = new Estoque($db);
         </form>
     <?php endif; ?>
 
-  
     <p><a href="<?= $baseUrl ?>/produto">Cancelar</a></p>
 <?php endif; ?>
-
 
 <table border="1" cellpadding="10" cellspacing="0">
     <thead>
@@ -137,15 +127,13 @@ $estoqueModel = new Estoque($db);
 
                         <hr/>
 
-                        
                         <form action="<?= $baseUrl ?>/carrinho/adicionar" method="POST" style="margin-top:10px;">
                             <input type="hidden" name="produto_id" value="<?= htmlspecialchars($produto['id']) ?>" />
 
                             <label for="variacao_<?= $produto['id'] ?>">Variação:</label>
                             <select name="variacao" id="variacao_<?= $produto['id'] ?>" required>
                                 <?php
-                                $stmt = $estoqueModel->listarPorProduto($produto['id']);
-                                $variacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                $variacoes = $estoquesPorProduto[$produto['id']] ?? [];
 
                                 if (!empty($variacoes)) {
                                     foreach ($variacoes as $var) {

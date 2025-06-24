@@ -11,7 +11,6 @@ class ProdutoController {
     public function index() {
         $produtos = $this->service->listarTodos();
 
-        // Buscar variações e estoques para cada produto
         $estoquesPorProduto = [];
         foreach ($produtos as $produto) {
             $stmt = $this->service->listarEstoquesPorProduto($produto['id']);

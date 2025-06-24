@@ -8,6 +8,7 @@ $isEdit = !empty($cupom);
 <head>
     <meta charset="UTF-8">
     <title><?= $isEdit ? "Editar Cupom" : "Criar Novo Cupom" ?></title>
+    <link rel="stylesheet" href="<?= $baseUrl ?>/css/form.css" />
 </head>
 <body>
 

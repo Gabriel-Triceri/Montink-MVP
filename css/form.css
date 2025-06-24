@@ -1,63 +1,69 @@
-/* form.css */
-
 body {
-    background: #f7f9fc;
     font-family: Arial, sans-serif;
-    color: #333;
-    padding: 20px;
+    background-color: #f6f6f6;
+    margin: 0;
+    padding: 0;
 }
 
-h2 {
+.container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
     color: #0188A7;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
 }
 
 form {
-    background: #fff;
-    padding: 20px;
-    border-radius: 6px;
-    box-shadow: 0 0 10px rgba(1, 136, 167, 0.1);
-    max-width: 400px;
+    display: flex;
+    flex-direction: column;
 }
 
 label {
-    display: block;
-    margin-bottom: 6px;
+    margin-top: 15px;
+    margin-bottom: 5px;
     font-weight: bold;
+    color: #333;
 }
 
 input[type="text"],
 input[type="number"] {
-    width: 100%;
-    padding: 8px 10px;
-    margin-bottom: 15px;
+    padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-button {
-    background-color: #0188A7;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 4px;
-    cursor: pointer;
+    border-radius: 6px;
     font-size: 16px;
 }
 
-button:hover {
-    background-color: #01677f;
+button {
+    margin-top: 25px;
+    padding: 12px;
+    background-color: #0188A7;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-p a {
-    display: inline-block;
-    margin-top: 10px;
-    color: #555;
-    font-weight: normal;
+button:hover {
+    background-color: #016f8a;
+}
+
+a {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: #0188A7;
     text-decoration: none;
 }
 
-p a:hover {
+a:hover {
     text-decoration: underline;
 }

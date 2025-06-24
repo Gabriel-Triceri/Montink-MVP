@@ -1,4 +1,5 @@
 <?php
+$baseUrl = '/DEV-GABRIEL'; 
 $produto = $produto ?? null;
 $isEdit = !empty($produto) && !empty($produto['id']);
 ?>
@@ -8,6 +9,10 @@ $isEdit = !empty($produto) && !empty($produto['id']);
 <head>
     <meta charset="UTF-8" />
     <title><?= $isEdit ? "Editar Produto" : "Cadastrar Produto" ?></title>
+    <link rel="stylesheet" href="/DEV-GABRIEL/css/form.css" />
+
+
+
 </head>
 <body>
 

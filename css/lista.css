@@ -1,15 +1,17 @@
 /* lista.css */
 
 body {
-    background: #f7f9fc;
+    background-color: #f7f9fc;
     font-family: Arial, sans-serif;
     color: #333;
+    margin: 0;
     padding: 20px;
 }
 
-h1 {
+h1, h2, h3 {
+    color: #0188A7;
     margin-bottom: 20px;
-    color: #222;
+    text-align: center;
 }
 
 a {
@@ -22,13 +24,29 @@ a:hover {
     text-decoration: underline;
 }
 
+button, input[type="submit"] {
+    padding: 10px 16px;
+    background-color: #0188A7;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: #016b83;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
+    background-color: white;
     border-radius: 6px;
     overflow: hidden;
-    box-shadow: 0 0 10px rgba(1, 136, 167, 0.1);
+    box-shadow: 0 2px 8px rgba(1, 136, 167, 0.1);
+    margin-top: 30px;
 }
 
 thead {
@@ -39,28 +57,41 @@ thead {
 th, td {
     padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 tbody tr:hover {
     background-color: #f1f9fb;
 }
 
-table a {
-    color: #0188A7;
-    font-weight: bold;
+form {
+    margin-top: 10px;
 }
 
-table a:hover {
-    text-decoration: underline;
+select, input[type="number"], input[type="text"] {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
-@media (max-width: 600px) {
-    table {
+select:focus, input:focus {
+    outline: none;
+    border-color: #0188A7;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
         font-size: 14px;
     }
 
     th, td {
         padding: 8px 10px;
+    }
+
+    button, input[type="submit"] {
+        width: 100%;
+        margin-top: 10px;
     }
 }

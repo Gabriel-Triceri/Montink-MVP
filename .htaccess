@@ -1,10 +1,10 @@
 RewriteEngine On
 RewriteBase /DEV-GABRIEL/
 
-# NÃO redireciona arquivos estáticos
-RewriteCond %{REQUEST_URI} \.(css|js|png|jpg|jpeg|gif|ico)$ [NC]
-RewriteRule .* - [L]
+# Permite acesso direto a arquivos estáticos (css, js, imagens, etc)
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
 
-RewriteCond %{REQUEST_FILENAME} !-f
+# Redireciona todas as outras requisições para index.php
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]

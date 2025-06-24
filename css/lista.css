@@ -1,0 +1,66 @@
+/* lista.css */
+
+body {
+    background: #f7f9fc;
+    font-family: Arial, sans-serif;
+    color: #333;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #222;
+}
+
+a {
+    color: #0188A7;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(1, 136, 167, 0.1);
+}
+
+thead {
+    background-color: #0188A7;
+    color: white;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+    background-color: #f1f9fb;
+}
+
+table a {
+    color: #0188A7;
+    font-weight: bold;
+}
+
+table a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    table {
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 8px 10px;
+    }
+}

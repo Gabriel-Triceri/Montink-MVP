@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteBase /DEV-GABRIEL/
+
+# NÃO redireciona arquivos estáticos
+RewriteCond %{REQUEST_URI} \.(css|js|png|jpg|jpeg|gif|ico)$ [NC]
+RewriteRule .* - [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]

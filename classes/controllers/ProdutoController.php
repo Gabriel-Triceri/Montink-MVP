@@ -9,7 +9,7 @@ class ProdutoController {
     }
 
     public function index() {
-        $produtos = $this->service->listarTodos();
+        $produtos = $this->service->listarProdutosComEstoque();
 
         $estoquesPorProduto = [];
         foreach ($produtos as $produto) {

@@ -1,0 +1,71 @@
+/* Finalizar Compra - estilo alinhado com outras páginas */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+h2 {
+    font-weight: 600;
+    font-size: 24px;
+    margin-bottom: 24px;
+}
+
+form {
+    max-width: 400px;
+    background: #fff;
+    padding: 24px 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+}
+
+input[type="email"] {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 15px;
+    border: 1.5px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.25s ease;
+}
+
+input[type="email"]:focus {
+    border-color: #0069d9;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 105, 217, 0.4);
+}
+
+button {
+    width: 100%;
+    background-color: #0069d9;
+    color: #fff;
+    border: none;
+    padding: 12px 0;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: background-color 0.25s ease;
+}
+
+button:hover {
+    background-color: #004a9f;
+}
+
+p {
+    font-size: 14px;
+    color: #d9534f; /* cor vermelha padrão de erro */
+    margin-bottom: 16px;
+    font-weight: 600;
+}

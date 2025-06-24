@@ -131,4 +131,11 @@ class CarrinhoService {
     public function criarPedido($carrinho, $subtotal, $frete, $desconto, $cupomId) {
         return $this->pedidoModel->criarPedido($carrinho, $subtotal, $frete, $desconto, $cupomId);
     }
+
+    // Chama o método no model Estoque para diminuir o estoque
+    public function diminuirEstoque($carrinho) {
+        foreach ($carrinho as $item) {
+            $this->estoqueModel->diminuirQuantidade($item['estoque_id'], $item['quantidade']);
+        }
+    }
 }

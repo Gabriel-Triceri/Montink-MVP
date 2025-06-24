@@ -82,6 +82,14 @@ class Estoque {
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':produto_id', $this->produto_id);
         return $stmt->execute();
-}
+    }
 
+    // Método para diminuir quantidade no estoque
+    public function diminuirQuantidade($estoqueId, $quantidade) {
+        $query = "UPDATE " . $this->table . " SET quantidade = quantidade - :quantidade WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':quantidade', $quantidade, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $estoqueId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }

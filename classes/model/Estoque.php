@@ -84,7 +84,7 @@ class Estoque {
         return $stmt->execute();
     }
 
-    // Método para diminuir quantidade no estoque
+
     public function diminuirQuantidade($estoqueId, $quantidade) {
         $query = "UPDATE " . $this->table . " SET quantidade = quantidade - :quantidade WHERE id = :id";
         $stmt = $this->conn->prepare($query);

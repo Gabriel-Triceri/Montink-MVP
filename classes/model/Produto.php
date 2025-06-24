@@ -31,7 +31,7 @@ class Produto {
         $this->preco = $preco;
     }
 
-    // CRUD
+
 
     public function criar() {
         $query = "INSERT INTO " . $this->table . " (nome, preco) VALUES (:nome, :preco)";

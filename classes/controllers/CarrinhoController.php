@@ -103,12 +103,9 @@ class CarrinhoController {
 
     public function finalizar() {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            // Exibe o formulário para o usuário inserir email
             include __DIR__ . '/../../views/carrinho/finalizar.php';
             exit();
         }
-
-        // POST - processa a finalização
         $carrinho = $_SESSION['carrinho'] ?? [];
         if (empty($carrinho)) {
             $_SESSION['erro_carrinho'] = "Carrinho vazio.";
@@ -136,7 +133,7 @@ class CarrinhoController {
         $pedidoId = $this->service->criarPedido($carrinho, $subtotal, $frete, $desconto, $cupomId);
 
         if ($pedidoId) {
-            // Diminui o estoque dos produtos comprados
+         
             $this->service->diminuirEstoque($carrinho);
 
             $assunto = "Confirmação do Pedido #$pedidoId";

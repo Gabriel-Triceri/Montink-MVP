@@ -13,12 +13,10 @@ class ProdutoService {
         $this->estoqueModel = new Estoque($db);
     }
 
-    // Método que lista todos os produtos (sem filtro de estoque)
     public function listarTodos() {
         return $this->produtoModel->listar()->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Novo método: lista apenas produtos que possuem estoque > 0
     public function listarProdutosComEstoque() {
         $query = "
             SELECT p.*, COALESCE(SUM(e.quantidade), 0) AS estoque_total
